@@ -6,7 +6,7 @@ Ce projet vise à développer un modèle de machine learning pour prédire le ri
 
 - Construire un modèle de prédiction du risque de remboursement de crédit en utilisant des techniques de machine learning.
 - Classifier les clients en fonction de leur probabilité de rembourser leur crédit.
-- Utiliser Google Cloud Platform (GCP) pour l'entraînement et le déploiement du modèle.
+- Utiliser Google Cloud Platform (GCP) pour l'entraînement et le déploiement (En cours) du modèle.
 
 ## Technologies utilisées
 
