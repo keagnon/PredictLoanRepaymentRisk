@@ -1,6 +1,3 @@
-
----
-
 # Modèle de prédiction du risque de remboursement de crédit bancaire
 
 Ce projet vise à développer un modèle de machine learning pour prédire le risque de remboursement de crédit bancaire, permettant ainsi aux institutions financières de prendre des décisions plus éclairées en matière de prêts.
@@ -62,4 +59,3 @@ Ce projet vise à développer un modèle de machine learning pour prédire le ri
 
 GBE Keagnon Grâce Helena
 
----
