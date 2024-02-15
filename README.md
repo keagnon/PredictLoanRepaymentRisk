@@ -55,7 +55,5 @@ Ce projet vise à développer un modèle de machine learning pour prédire le ri
 - **Notebook dans Jupyter Lab sur GCP** :
   ![JupyterLab GCP](screenshots/JupyterLab_GCP.png)
 
-## Auteur
 
-GBE Keagnon Grâce Helena
 
