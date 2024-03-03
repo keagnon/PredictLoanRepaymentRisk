@@ -12,7 +12,8 @@ class DataExploration:
         """
         Display all columns and the first 5 lines of the dataset
         Display columns and their types
-        Args:
+        -------------------------------------------------------------
+        params:
             data (DataFrame): DataFrame.
         """
         print(data.head())
@@ -35,9 +36,10 @@ class DataExploration:
     def explore_data(data, columns_to_drop=None):
         """
         Perform data exploration.
-        Args:
-            data (DataFrame): DataFrame containing the data.
-            columns_to_drop (list): List of columns to drop from the DataFrame (default is None).
+        -------------------------------------------------------------
+        params:
+            data: DataFrame containing the data.
+            columns_to_drop: List of columns to drop from the DataFrame (default is None).
         """
         print("Data information:")
         print(data.info())
@@ -49,8 +51,9 @@ class DataExploration:
     def display_unique_values(data):
         """
         Display unique values of each column in a DataFrame.
-        Args:
-            data (DataFrame): DataFrame containing the data.
+        -------------------------------------------------------------
+        params:
+            data : DataFrame containing the data.
         """
         for column in data.columns:
             print("Column:", column)
@@ -60,8 +63,9 @@ class DataExploration:
     def display_missing_values(data):
         """
         Display the number of missing values per column in the DataFrame.
-        Args:
-            data (DataFrame): DataFrame containing the data.
+        -------------------------------------------------------------
+        params:
+            data: DataFrame containing the data.
         """
         missing_values = data.isnull().sum()
         if missing_values.sum() == 0:
@@ -73,10 +77,19 @@ class DataExploration:
     def data_correlation(data):
         """
         Calculate and display the correlation matrix of the DataFrame.
-        Args:
-            data (DataFrame): DataFrame containing the data.
+        Only numeric columns are considered for correlation calculation.
+        -------------------------------------------------------------
+        params:
+            data : DataFrame containing the data.
         """
-        correlation_matrix = data.corr()
-        print("Correlation Matrix:")
-        print(correlation_matrix)
+
+        numeric_data = data.select_dtypes(include=['float64', 'int64'])
+
+        if not numeric_data.empty:
+            correlation_matrix = numeric_data.corr()
+            print("Correlation Matrix:")
+            print(correlation_matrix)
+        else:
+            print("No numeric columns found in the DataFrame for correlation calculation.")
+
 
