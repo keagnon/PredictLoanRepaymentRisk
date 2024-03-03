@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.ensemble import IsolationForest
 from visualization import VisualizationData
+from exploration import DataExploration
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 class PreprocessingData:
     """
@@ -25,8 +27,6 @@ class PreprocessingData:
         isolation_forest.fit(dataframe[[column]])
         anomalies = isolation_forest.predict(dataframe[[column]])
         dataframe_filtered = dataframe[anomalies == 1]
-
-        VisualizationData.boxplot(dataframe_filtered, column)
 
         return dataframe_filtered
 
@@ -65,6 +65,8 @@ class PreprocessingData:
             DataFrame: DataFrame with categorical columns encoded using one-hot encoding.
         """
         df_encoded = pd.get_dummies(df, columns=categorical_columns)
+        print(df_encoded.columns)
+        DataExploration.display_columns_by_type(df_encoded)
         return df_encoded
 
 
