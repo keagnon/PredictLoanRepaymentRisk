@@ -2,3 +2,20 @@ pandas
 matplotlib
 seaborn
 sklearn
+
+"""    # Data visualization
+    VisualizationData.numeric_histograms(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.scatter_plots(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.categorical_bar_charts(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.boxplot(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.violin_plots(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.pairplot(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.heatmap_correlation(df)
+    print("----------------------------------------------------------------")
+"""
