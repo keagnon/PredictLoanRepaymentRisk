@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import joblib
+import os
 from exploration import DataExploration
 from visualization import VisualizationData
 from preprocessing import PreprocessingData
@@ -18,6 +20,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
+
 
 
 df = pd.read_csv('data/credit_customers_upload.csv')
@@ -103,10 +106,13 @@ if __name__ == "__main__":
 
     print("\nEvaluation metrics:")
     train_evaluator.evaluate_metrics(models, X_train, X_test, y_train, y_test)
-
-    TrainEvaluateData.score_after_tune(X_train, y_train)
+    iteration_number=6
+    TrainEvaluateData.score_after_tune(X_train, y_train ,iteration_number)
 
     TrainEvaluateData.tune_models_ensemble(X_train, y_train, X_test, y_test)
+
+
+
 
 
 

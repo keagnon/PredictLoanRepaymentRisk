@@ -11,6 +11,9 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
 
+import joblib
+import os
+
 class TrainEvaluateData:
     """
     Train and evaluate various machine learning models.
@@ -46,7 +49,7 @@ class TrainEvaluateData:
         models = {
             "Random Forest": RandomForestClassifier(),
             "Gradient Boosting": GradientBoostingClassifier(),
-            "Logistic Regression": LogisticRegression(max_iter=2000),
+            "Logistic Regression": LogisticRegression(max_iter=2300),
             "Support Vector Machine": SVC(),
             "Artificial Neural Network": MLPClassifier(),
             "K-Nearest Neighbors": KNeighborsClassifier(),
@@ -74,7 +77,7 @@ class TrainEvaluateData:
                     X_test_scaled = scaler.transform(X_test)
 
                     # Initialiser le modèle avec un nombre maximal d'itérations plus élevé
-                    model = LogisticRegression(max_iter=2000)
+                    model = LogisticRegression(max_iter=2100)
 
                     # Entraîner le modèle
                     model.fit(X_train_scaled, y_train)
@@ -138,9 +141,9 @@ class TrainEvaluateData:
 
     def tune_random_forest(X_train, y_train):
         param_grid_rf = {
-            'n_estimators': [50, 100, 150],
-            'max_depth': [None, 10, 20],
-            'min_samples_split': [2, 5, 10],
+            'n_estimators': [100, 280, 350],
+            'max_depth': [None, 15, 25],
+            'min_samples_split': [3, 7, 15],
             'min_samples_leaf': [1, 2, 4]
         }
         grid_search_rf = GridSearchCV(RandomForestClassifier(), param_grid_rf, cv=3, scoring='accuracy')
@@ -149,15 +152,35 @@ class TrainEvaluateData:
 
     def tune_gradient_boosting(X_train, y_train):
         param_grid_gbt = {
-            'n_estimators': [50, 100, 150],
-            'learning_rate': [0.01, 0.1, 0.5],
-            'max_depth': [3, 5, 7]
+            'n_estimators': [55, 195, 350],
+            'learning_rate': [0.06, 0.2, 0.7],
+            'max_depth': [2, 3, 7]
         }
         grid_search_gbt = GridSearchCV(GradientBoostingClassifier(), param_grid_gbt, cv=3, scoring='accuracy')
         grid_search_gbt.fit(X_train, y_train)
         return grid_search_gbt
 
-    def score_after_tune(X_train, y_train):
+
+    def save_best_model(model, model_name, iteration):
+        """
+        Save the best trained model to a file using joblib.
+
+        Params:
+            model: Trained model object.
+            model_name (str): Name of the model.
+            iteration (int): Iteration number of the script.
+
+        Returns:
+            str: Path to the saved model file.
+        """
+        models_dir = f"models/iteration_{iteration}"
+        os.makedirs(models_dir, exist_ok=True)  # Create directory if it doesn't exist
+        model_path = f"{models_dir}/{model_name}_best_model.pkl"
+        joblib.dump(model, model_path)
+        print(f"Best {model_name} model saved successfully to:", model_path)
+        return model_path
+
+    def score_after_tune(X_train, y_train,iteration_number):
         rf_grid_search = TrainEvaluateData.tune_random_forest(X_train, y_train)
         gb_grid_search = TrainEvaluateData.tune_gradient_boosting(X_train, y_train)
 
@@ -166,17 +189,26 @@ class TrainEvaluateData:
         print("Gradient Boosting - Best Parameters:", gb_grid_search.best_params_)
         print("Gradient Boosting - Best Score:", gb_grid_search.best_score_)
 
+        # Enregistrer le meilleur modèle Random Forest
+        best_rf_model = rf_grid_search.best_estimator_
+        TrainEvaluateData.save_best_model(best_rf_model, "random_forest", iteration_number)
+
+        # Enregistrer le meilleur modèle Gradient Boosting
+        best_gb_model = gb_grid_search.best_estimator_
+        TrainEvaluateData.save_best_model(best_gb_model, "gradient_boosting", iteration_number)
+
+
     def tune_models_ensemble(X_train, y_train, X_test, y_test):
         rf_param_grid = {
-            'n_estimators': [100, 150, 200],
-            'max_depth': [10, 15, 20],
-            'min_samples_split': [2, 5, 10],
-            'min_samples_leaf': [1, 2, 4]
+            'n_estimators': [150, 450, 500],
+            'max_depth': [11, 15, 21],
+            'min_samples_split': [2, 5, 15],
+            'min_samples_leaf': [1, 3, 6]
         }
         gb_param_grid = {
-            'n_estimators': [50, 100, 150],
-            'learning_rate': [0.01, 0.05, 0.1],
-            'max_depth': [3, 5, 7]
+            'n_estimators': [55, 200, 250],
+            'learning_rate': [0.01, 0.08, 0.3],
+            'max_depth': [1, 7, 9]
         }
         rf = RandomForestClassifier(random_state=42)
         gb = GradientBoostingClassifier(random_state=42)
@@ -196,3 +228,5 @@ class TrainEvaluateData:
 
         ensemble_score = ensemble_model.score(X_test, y_test)
         print("Ensemble Model Score:", ensemble_score)
+
+
