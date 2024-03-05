@@ -9,6 +9,7 @@ from train_and_evaluate import TrainEvaluateData
 
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import VotingClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
@@ -17,6 +18,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
+
 
 df = pd.read_csv('data/credit_customers_upload.csv')
 
@@ -34,8 +36,23 @@ if __name__ == "__main__":
     DataExploration.explore_data(df)
     print("----------------------------------------------------------------")
     DataExploration.data_correlation(df)
-    print("----------------------------------------------------------------")
+    print("--------------------------End data exploration--------------------------------------")
 
+    # Data visualization
+    VisualizationData.numeric_histograms(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.scatter_plots(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.categorical_bar_charts(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.boxplot(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.violin_plots(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.pairplot(df)
+    print("----------------------------------------------------------------")
+    VisualizationData.heatmap_correlation(df)
+    print("-------------------------End data visualization---------------------------------------")
 
     # Preprocessing
     preprocessor = PreprocessingData()
@@ -44,49 +61,52 @@ if __name__ == "__main__":
     for colonne in columns_to_work_on:
         df_clean = preprocessor.remove_outliers(df, colonne)
     print(df_clean)
-    print("----------------------------------------------------------------")
+    print("---------------------------End preprocessing work on specific columns-------------------------------------")
 
-    VisualizationData.boxplot(df_clean, columns=columns_to_work_on)
+    #VisualizationData.boxplot(df_clean, columns=columns_to_work_on)
 
     df_processed = PreprocessingData.preprocess_special_values(df_clean)
     print(df_processed)
-    print("----------------------------------------------------------------")
+    print("-----------------------End preprocessing special values-----------------------------------------")
 
-    columns_to_encode = [
-        'Comptes','Historique_credit','Objet_credit','Epargne',
-        'Anciennete_emploi','Situation_familiale','Garanties',
-        'Biens','Autres_credits', 'Statut_domicile',
-        'Type_emploi', 'Telephone', 'Etranger']
-
-    df_encoded = PreprocessingData.encode_onehot(df_processed, columns_to_encode)
+    df_encoded = PreprocessingData.encode_onehot(df_processed)
+    print(df_encoded)
 
     df_encoded = PreprocessingData.convert_bool_to_float(df_encoded)
+    print("----------------------------After converting bool value to float----------------------------------")
     print(df_encoded)
-    print("----------------------------------------------------------------")
-    #DataExploration.display_columns_by_type(df_encoded)
-    print("----------------------------------------------------------------")
+    DataExploration.display_columns_by_type(df_encoded)
+    print("-------------------------End preprocessing---------------------------------------")
+
 
     df_scaled = PreprocessingData.scale_data(df_encoded)
     print(df_scaled)
-    print("----------------------------------------------------------------")
+    print("------------------------End scaling----------------------------------------")
 
     # Train and Evaluation
-    X = df_scaled.drop(columns=['Cible'])  # Caractéristiques
-    y = df_scaled['Cible']  # Cible
+    X = df_encoded.drop(columns=['Cible'])  # Caractéristiques
+    y = df_encoded['Cible']  # Cible
 
     train_evaluator = TrainEvaluateData(X, y)
     X_train, X_test, y_train, y_test = train_evaluator.split_data()
     models = train_evaluator.initialize_models()
+    print("---------------------------Training and evaluation-------------------------------------")
+    print(models)
+    print(X_test.head())
+    print(X_train.head())
 
     print("Training and evaluating models:")
     train_evaluator.train_evaluate_models(models, X_train, X_test, y_train, y_test)
 
-"""
     print("\nCross-validation results:")
     train_evaluator.cross_validation(models, X_train, y_train)
 
     print("\nEvaluation metrics:")
     train_evaluator.evaluate_metrics(models, X_train, X_test, y_train, y_test)
-    """
+
+    TrainEvaluateData.score_after_tune(X_train, y_train)
+
+    TrainEvaluateData.tune_models_ensemble(X_train, y_train, X_test, y_test)
+
 
 

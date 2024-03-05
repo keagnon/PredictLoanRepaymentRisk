@@ -53,21 +53,24 @@ class PreprocessingData:
         return df_processed
 
 
-    def encode_onehot(df, categorical_columns):
+    def encode_onehot(df):
         """
         Apply one-hot encoding to categorical columns of a DataFrame.
-        -------------------------------------------------------------
-        params:
-            df: Pandas DataFrame containing the data.
-            categorical_columns (list): List of categorical column names.
+
+        Args:
+            df (DataFrame): Pandas DataFrame containing the data.
 
         Returns:
             DataFrame: DataFrame with categorical columns encoded using one-hot encoding.
         """
+        # Select only the categorical columns
+        categorical_columns = df.select_dtypes(include=['object']).columns
+
+        # Apply one-hot encoding to the categorical columns
         df_encoded = pd.get_dummies(df, columns=categorical_columns)
-        print(df_encoded.columns)
-        DataExploration.display_columns_by_type(df_encoded)
+
         return df_encoded
+
 
 
     def convert_bool_to_float(df):

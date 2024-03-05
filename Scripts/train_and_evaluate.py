@@ -1,6 +1,8 @@
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.ensemble import VotingClassifier
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
@@ -16,7 +18,7 @@ class TrainEvaluateData:
     def __init__(self, X, y):
         """
         Initialize the class with features and target variables.
-        
+
         Args:
             X (DataFrame): Features.
             y (Series): Target variable.
@@ -44,7 +46,7 @@ class TrainEvaluateData:
         models = {
             "Random Forest": RandomForestClassifier(),
             "Gradient Boosting": GradientBoostingClassifier(),
-            "Logistic Regression": LogisticRegression(),
+            "Logistic Regression": LogisticRegression(max_iter=2000),
             "Support Vector Machine": SVC(),
             "Artificial Neural Network": MLPClassifier(),
             "K-Nearest Neighbors": KNeighborsClassifier(),
@@ -53,32 +55,49 @@ class TrainEvaluateData:
         return models
 
     def train_evaluate_models(self, models, X_train, X_test, y_train, y_test):
-        """
-        Train and evaluate machine learning models.
+            """
+            Train and evaluate machine learning models.
 
-        Args:
-            models (dict): Dictionary of initialized models.
-            X_train (DataFrame): Training features.
-            X_test (DataFrame): Testing features.
-            y_train (Series): Training target.
-            y_test (Series): Testing target.
-        """
-        accuracies = {}
-        for name, model in models.items():
-            model.fit(X_train, y_train)
-            y_pred = model.predict(X_test)
-            accuracy = accuracy_score(y_test, y_pred)
-            accuracies[name] = accuracy
+            params:
+                models (dict): Dictionary of initialized models.
+                X_train (DataFrame): Training features.
+                X_test (DataFrame): Testing features.
+                y_train (Series): Training target.
+                y_test (Series): Testing target.
+            """
+            accuracies = {}
+            for name, model in models.items():
+                if name == "Logistic Regression":
+                    # Mettre à l'échelle des données pour la régression logistique
+                    scaler = StandardScaler()
+                    X_train_scaled = scaler.fit_transform(X_train)
+                    X_test_scaled = scaler.transform(X_test)
 
-        sorted_accuracies = sorted(accuracies.items(), key=lambda x: x[1], reverse=True)
-        for name, accuracy in sorted_accuracies:
-            print(f"{name}: {accuracy}")
+                    # Initialiser le modèle avec un nombre maximal d'itérations plus élevé
+                    model = LogisticRegression(max_iter=2000)
+
+                    # Entraîner le modèle
+                    model.fit(X_train_scaled, y_train)
+
+                    # Faire des prédictions
+                    y_pred = model.predict(X_test_scaled)
+                else:
+                    # Pas besoin de mise à l'échelle pour les autres modèles
+                    model.fit(X_train, y_train)
+                    y_pred = model.predict(X_test)
+
+                accuracy = accuracy_score(y_test, y_pred)
+                accuracies[name] = accuracy
+
+            sorted_accuracies = sorted(accuracies.items(), key=lambda x: x[1], reverse=True)
+            for name, accuracy in sorted_accuracies:
+                print(f"{name}: {accuracy}")
 
     def cross_validation(self, models, X_train, y_train):
         """
         Apply cross-validation for each model.
 
-        Args:
+        Params:
             models (dict): Dictionary of initialized models.
             X_train (DataFrame): Training features.
             y_train (Series): Training target.
@@ -91,7 +110,7 @@ class TrainEvaluateData:
         """
         Calculate evaluation metrics for each model.
 
-        Args:
+        Params:
             models (dict): Dictionary of initialized models.
             X_train (DataFrame): Training features.
             X_test (DataFrame): Testing features.
@@ -139,8 +158,8 @@ class TrainEvaluateData:
         return grid_search_gbt
 
     def score_after_tune(X_train, y_train):
-        rf_grid_search = tune_random_forest(X_train, y_train)
-        gb_grid_search = tune_gradient_boosting(X_train, y_train)
+        rf_grid_search = TrainEvaluateData.tune_random_forest(X_train, y_train)
+        gb_grid_search = TrainEvaluateData.tune_gradient_boosting(X_train, y_train)
 
         print("Random Forest - Best Parameters:", rf_grid_search.best_params_)
         print("Random Forest - Best Score:", rf_grid_search.best_score_)
