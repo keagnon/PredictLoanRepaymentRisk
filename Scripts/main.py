@@ -63,7 +63,7 @@ if __name__ == "__main__":
     print(df_clean)
     print("---------------------------End preprocessing work on specific columns-------------------------------------")
 
-    #VisualizationData.boxplot(df_clean, columns=columns_to_work_on)
+    VisualizationData.boxplot(df_clean, columns=columns_to_work_on)
 
     df_processed = PreprocessingData.preprocess_special_values(df_clean)
     print(df_processed)
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     print("------------------------End scaling----------------------------------------")
 
     # Train and Evaluation
-    X = df_encoded.drop(columns=['Cible'])  # Caractéristiques
+    X = df_encoded.drop(columns=['Cible'])
     y = df_encoded['Cible']  # Cible
 
     train_evaluator = TrainEvaluateData(X, y)
