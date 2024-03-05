@@ -49,7 +49,7 @@ class TrainEvaluateData:
         models = {
             "Random Forest": RandomForestClassifier(),
             "Gradient Boosting": GradientBoostingClassifier(),
-            "Logistic Regression": LogisticRegression(max_iter=2300),
+            "Logistic Regression": LogisticRegression(max_iter=2500),
             "Support Vector Machine": SVC(),
             "Artificial Neural Network": MLPClassifier(),
             "K-Nearest Neighbors": KNeighborsClassifier(),
@@ -141,10 +141,10 @@ class TrainEvaluateData:
 
     def tune_random_forest(X_train, y_train):
         param_grid_rf = {
-            'n_estimators': [100, 280, 350],
+            'n_estimators': [150, 290, 450],
             'max_depth': [None, 15, 25],
             'min_samples_split': [3, 7, 15],
-            'min_samples_leaf': [1, 2, 4]
+            'min_samples_leaf': [2, 4, 9]
         }
         grid_search_rf = GridSearchCV(RandomForestClassifier(), param_grid_rf, cv=3, scoring='accuracy')
         grid_search_rf.fit(X_train, y_train)
@@ -152,9 +152,9 @@ class TrainEvaluateData:
 
     def tune_gradient_boosting(X_train, y_train):
         param_grid_gbt = {
-            'n_estimators': [55, 195, 350],
+            'n_estimators': [58, 185, 380],
             'learning_rate': [0.06, 0.2, 0.7],
-            'max_depth': [2, 3, 7]
+            'max_depth': [2, 4, 9]
         }
         grid_search_gbt = GridSearchCV(GradientBoostingClassifier(), param_grid_gbt, cv=3, scoring='accuracy')
         grid_search_gbt.fit(X_train, y_train)
@@ -200,15 +200,15 @@ class TrainEvaluateData:
 
     def tune_models_ensemble(X_train, y_train, X_test, y_test):
         rf_param_grid = {
-            'n_estimators': [150, 450, 500],
+            'n_estimators': [350, 450, 500],
             'max_depth': [11, 15, 21],
-            'min_samples_split': [2, 5, 15],
+            'min_samples_split': [2, 5, 12],
             'min_samples_leaf': [1, 3, 6]
         }
         gb_param_grid = {
-            'n_estimators': [55, 200, 250],
-            'learning_rate': [0.01, 0.08, 0.3],
-            'max_depth': [1, 7, 9]
+            'n_estimators': [55, 220, 250],
+            'learning_rate': [0.01, 0.07, 0.3],
+            'max_depth': [1, 6, 9]
         }
         rf = RandomForestClassifier(random_state=42)
         gb = GradientBoostingClassifier(random_state=42)

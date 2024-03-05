@@ -27,7 +27,16 @@ Ce projet vise à développer un modèle de machine learning pour prédire le ri
 |- screenshots/             # Répertoire pour les captures d'écran
 |   |- GCP_Workbench.png    # Capture d'écran de l'interface Workbench sur GCP
 |   |- JupyterLab_GCP.png   # Capture d'écran du notebook dans Jupyter Lab sur GCP
-|- README.md                # Documentation principale du projet
+|- overview_models_results/ # Répertoire pour les résultats de modèle
+|   |- iteration_0.webcam   # Vidéo de l'itération 0 du modèle
+|   |- iteration_1.webcam   # Vidéo de l'itération 1 du modèle
+|   |- iteration_2.webcam   # Vidéo de l'itération 2 du modèle
+|- Scripts/                 # Répertoire pour les scripts Python
+|   |- main.py              # Script principal
+|   |- exploration.py       # Script pour l'exploration des données
+|   |- visualization.py     # Script pour la visualisation des données
+|   |- preprocessing.py     # Script pour le prétraitement des données
+|   |- train_evaluate.py    # Script pour l'entraînement et l'évaluation des modèles
 ```
 
 ## Instructions d'utilisation
@@ -39,9 +48,9 @@ Ce projet vise à développer un modèle de machine learning pour prédire le ri
    pip install -r requirements.txt
    ```
 
-2. **Exécution du notebook** :
+2. **Exécution des scripts** :
 
-   Ouvrez le notebook `Credit_Risk_Prediction.ipynb` dans Jupyter Lab. Exécutez chaque cellule pour analyser les données, entraîner le modèle et évaluer les performances.
+   Exécutez les scripts Python dans le répertoire `Scripts/` pour effectuer diverses tâches telles que l'exploration des données, la visualisation, le prétraitement et l'entraînement des modèles.
 
 3. **Déploiement sur GCP** :
 
@@ -55,5 +64,11 @@ Ce projet vise à développer un modèle de machine learning pour prédire le ri
 - **Notebook dans Jupyter Lab sur GCP** :
   ![JupyterLab GCP](screenshots/JupyterLab_GCP.png)
 
+- **Vidéo YouTube** :
+  [Lien vers la vidéo](https://youtu.be/IpkuGQDhuMY)
 
+## Problèmes rencontrés et solutions envisagées
 
+J'ai rencontré des difficultés lors de la gestion des hyperparamètres des modèles à chaque itération, ce qui a rendu difficile la sauvegarde des meilleurs hyperparamètres. Pour résoudre ce problème, j'ai décidé d'organiser les résultats des modèles dans les répertoires `overview_models_results/` et `models/`. Cependant, cela peut être fastidieux à long terme.
+
+La prochaine étape consistera à travailler sur un projet de clustering pour explorer davantage d'autres types de données et utiliser un outil de suivi des expériences tel que MLFlow, qui facilitera la gestion des hyperparamètres et la sauvegarde des modèles. De plus, je prévois de déployer le modèle entraîné en utilisant FlaskAPI et de créer une interface utilisateur conviviale avec Streamlit.

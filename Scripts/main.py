@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     print("\nEvaluation metrics:")
     train_evaluator.evaluate_metrics(models, X_train, X_test, y_train, y_test)
-    iteration_number=6
+    iteration_number=7
     TrainEvaluateData.score_after_tune(X_train, y_train ,iteration_number)
 
     TrainEvaluateData.tune_models_ensemble(X_train, y_train, X_test, y_test)
